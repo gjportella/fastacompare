@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
+	<Properties>
+		<Property name="LOG_FILE_PATH">${sys:catalina.home}/logs</Property>
+		<Property name="PATTERN_JBOSS">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %m%n</Property>
+		<Property name="PATTERN_TOMCAT">%d{dd-MMM-yyyy HH:mm:ss.SSS} %-5p [%t] %m%n</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="console">
+			<PatternLayout pattern="${PATTERN_TOMCAT}" />
+		</Console>
+
+		<RollingFile name="daily-file"
+			fileName="${LOG_FILE_PATH}/iaaspricing.log"
+			filePattern="${LOG_FILE_PATH}/checkpoint-%d{yyyy-MM-dd}.log">
+			<PatternLayout pattern="${PATTERN_JBOSS}" />
+			<TimeBasedTriggeringPolicy />
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<logger name="br.unb.cic.laico.checkpoint" level="TRACE">
+			<AppenderRef ref="daily-file" />
+		</logger>
+
+		<Root level="WARN">
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+</Configuration>
