@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css" />
 	<script type="text/javascript" src="${pageContext.request.contextPath}/script/jquery.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/script/bootstrap.min.js"></script>
-	<title>IaaS Pricing Web Application</title>
+	<title>Checkpoint Web Application</title>
 </head>
 <body>
 
@@ -16,17 +16,35 @@
 		<h2>FASTA Comparison Checkpoint Web Application</h2>
 		<p>&nbsp;</p>
 
-		<h4>Rest Web Service API (in JSON format):</h4>
+		<h3>Rest Web Service API (in JSON format)</h3>
+		<p>&nbsp;</p>
+
+		<h3>Checkpoint Services Available:</h3>
+		<p>&nbsp;</p>
+
 		<ul>
 			<li>
-				Availability Zone:
-				<a href="${pageContext.request.contextPath}/rest/availabilityZone/id/1">1</a>,
-				<a href="${pageContext.request.contextPath}/rest/availabilityZone/list">all</a>
+				<a href="${pageContext.request.contextPath}/rest/service?c=start">Start</a>
+			</li>
+			<li>
+				<a href="${pageContext.request.contextPath}/rest/service?c=list">List</a>
+			</li>
+			<li>
+				<a href="${pageContext.request.contextPath}/rest/service?c=view&key=">View (change key parameter)</a>
+			</li>
+			<li>
+				<a href="${pageContext.request.contextPath}/rest/service?c=save&key=&sequence=">Save (change key and sequence parameters)</a>
+			</li>
+			<li>
+				<a href="${pageContext.request.contextPath}/rest/service?c=upload&key=&sequence=&description=&content=">Upload (change key, sequence, description and content parameters)</a>
+			</li>
+			<li>
+				<a href="${pageContext.request.contextPath}/rest/service?c=finish&key=">Finish (change key parameter)</a>
 			</li>
 		</ul>
-		<ul>
-			<li>Swagger (OpenAPI Specification)</li>
-		</ul>
+
+		<p>&nbsp;</p>
+		<p>GitHub repository: <a href="http://github.com/gjportella/fastacompare">http://github.com/gjportella/fastacompare</a></p>
 	</div>
 
 </body>
