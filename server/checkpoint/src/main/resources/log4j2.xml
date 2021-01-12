@@ -12,7 +12,7 @@
 		</Console>
 
 		<RollingFile name="daily-file"
-			fileName="${LOG_FILE_PATH}/iaaspricing.log"
+			fileName="${LOG_FILE_PATH}/checkpoint.log"
 			filePattern="${LOG_FILE_PATH}/checkpoint-%d{yyyy-MM-dd}.log">
 			<PatternLayout pattern="${PATTERN_JBOSS}" />
 			<TimeBasedTriggeringPolicy />
@@ -24,7 +24,7 @@
 			<AppenderRef ref="daily-file" />
 		</logger>
 
-		<Root level="WARN">
+		<Root level="INFO">
 			<AppenderRef ref="console" />
 		</Root>
 	</Loggers>

@@ -11,12 +11,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import br.unb.cic.laico.checkpoint.business.CheckpointBO;
 import br.unb.cic.laico.checkpoint.model.CheckpointInformation;
 
 public class CheckpointService extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final Logger logger = LogManager.getLogger(CheckpointService.class);
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -43,6 +48,19 @@ public class CheckpointService extends HttpServlet {
 
 		} else {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		}
+	}
+	
+	@Override
+	public void destroy() {
+		
+		CheckpointBO checkpointBO = CheckpointBO.getInstance();
+		Set<String> keySet = checkpointBO.listKeys();
+		Iterator<String> it = keySet.iterator();
+		while (it.hasNext()) {
+			String key = it.next();
+			CheckpointInformation info = checkpointBO.getByKey(key);
+			logger.info(info.toString());
 		}
 	}
 

@@ -19,32 +19,32 @@
 		<h3>Rest Web Service API (in text/plain and JSON formats)</h3>
 		<p>&nbsp;</p>
 
-		<h3>Checkpoint Services Available:</h3>
+		<h3>1. Checkpoint Services Available:</h3>
 		<p>&nbsp;</p>
 
 		<ul>
 			<li>
-				<a href="${pageContext.request.contextPath}/rest/service?c=start">Start</a>
+				<a href="${pageContext.request.contextPath}/rest/service?c=start">Start</a> (optionally inform the key parameter)
 			</li>
 			<li>
 				<a href="${pageContext.request.contextPath}/rest/service?c=list">List</a>
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/rest/service?c=view&key=">View (change key parameter)</a>
+				<a href="${pageContext.request.contextPath}/rest/service?c=view&key=">View</a> (change the key parameter)
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/rest/service?c=detailLastSequence&key=">Detail Last Sequence (change key parameter)</a>
+				<a href="${pageContext.request.contextPath}/rest/service?c=detailLastSequence&key=">Detail Last Sequence</a> (change the key parameter)
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/rest/service?c=save&key=&sequence=">Save (change key and sequence parameters)</a>
+				<a href="${pageContext.request.contextPath}/rest/service?c=save&key=&sequence=">Save</a> (change the key and sequence parameters)
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/rest/service?c=finish&key=">Finish (change key parameter)</a>
+				<a href="${pageContext.request.contextPath}/rest/service?c=finish&key=">Finish</a> (change the key parameter)
 			</li>
 		</ul>
 
 		<p>&nbsp;</p>
-		<h3>Upload Service Available:</h3>
+		<h3>2. Upload Service Available:</h3>
 		<p>&nbsp;</p>
 		
 		<ul>
@@ -56,6 +56,7 @@
 
 		<p>&nbsp;</p>
 		<p>GitHub repository: <a href="http://github.com/gjportella/fastacompare">http://github.com/gjportella/fastacompare</a></p>
+		<p>Copyright (c) 2021 - Gustavo Portella - License GPLv3. This software comes with ABSOLUTELY no warranty.</p>
 	</div>
 
 </body>

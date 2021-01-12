@@ -21,10 +21,22 @@ seqResultsPath="./results"
 serverUrlDetailLastSequence="$serverUrlBase/checkpoint/rest/service?c=detailLastSequence&key=$serverParamKey"
 wget -O _wget_tmp_file.txt "$serverUrlDetailLastSequence"
 lastSequence=`cat _wget_tmp_file.txt`
+rm _wget_tmp_file.txt
 
-# Set checkpoint flag
-checkpoint=false
-if test ! -z $lastSequence; then
+# Verify previous processing and set checkpoint flag
+if test -z $lastSequence; then
+
+	# There is not a previous processing
+	checkpoint=false
+
+	# Start key for current processing
+	serverUrlStart="$serverUrlBase/checkpoint/rest/service?c=start&key=$serverParamKey"
+	wget -O _wget_tmp_file.txt "$serverUrlStart"
+	rm _wget_tmp_file.txt
+
+else
+
+	# There is a previous processing
 	checkpoint=true
 fi
 
@@ -76,14 +88,19 @@ do
 	# Save checkpoint
 	serverUrlSave="$serverUrlBase/checkpoint/rest/service?c=save&key=$serverParamKey&sequence=$currentSequence"
 	wget -O _wget_tmp_file.txt "$serverUrlSave"
+	rm _wget_tmp_file.txt
+
+	# Clear procedures
+	rm -rf $ompWorkPath
 
 	# Simulate an exception
-	#break
+	break
 
 done
 
-# Clear procedures
-rm -rf $ompWorkPath
+# Finish key for current processing
+serverUrlFinish="$serverUrlBase/checkpoint/rest/service?c=finish&key=$serverParamKey"
+wget -O _wget_tmp_file.txt "$serverUrlFinish"
 rm _wget_tmp_file.txt
 
 echo "Execution completed."
