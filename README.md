@@ -21,5 +21,5 @@ Installation prerequisites:
 The MASA-OpenMP framework is available at https://github.com/edanssandes/MASA-OpenMP.
 CURL is available at https://curl.se/.
 
-Copyright (c) 2021 - Gustavo Portella - License GPLv3
+Copyright (c) 2021 - Gustavo Portella - License GPLv3.
 This software comes with ABSOLUTELY no warranty.
