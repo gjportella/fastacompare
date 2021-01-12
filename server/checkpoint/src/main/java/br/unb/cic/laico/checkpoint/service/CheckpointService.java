@@ -3,9 +3,9 @@ package br.unb.cic.laico.checkpoint.service;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,14 +17,6 @@ import br.unb.cic.laico.checkpoint.model.CheckpointInformation;
 public class CheckpointService extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	private String uploadPath;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		this.uploadPath = getServletConfig().getInitParameter("upload.path");
-	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,11 +32,11 @@ public class CheckpointService extends HttpServlet {
 		} else if ("view".equals(command)) {
 			this.doCommandView(request, response);
 
+		} else if ("detailLastSequence".equals(command)) {
+			this.getCommandDetailLastCompletedSequence(request, response);
+
 		} else if ("save".equals(command)) {
 			this.doCommandSave(request, response);
-
-		} else if ("upload".equals(command)) {
-			this.doCommandUpload(request, response);
 
 		} else if ("finish".equals(command)) {
 			this.doCommandFinish(request, response);
@@ -58,7 +50,8 @@ public class CheckpointService extends HttpServlet {
 			throws ServletException, IOException {
 
 		CheckpointBO checkpointBO = CheckpointBO.getInstance();
-		CheckpointInformation info = checkpointBO.create(request.getRemoteAddr());
+		CheckpointInformation info = checkpointBO.create(
+				request.getParameter("key"), request.getRemoteAddr());
 
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("text/plain;charset=UTF-8");
@@ -104,6 +97,29 @@ public class CheckpointService extends HttpServlet {
 		}
 	}
 
+	private void getCommandDetailLastCompletedSequence(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		CheckpointBO checkpointBO = CheckpointBO.getInstance();
+		CheckpointInformation info = checkpointBO.getByKey(request.getParameter("key"));
+		if (info != null && info.isActive()) {
+			
+			String lastSequence = "";
+			List<String> sequences = info.getCompletedSequences();
+			if (sequences.size() > 0) {
+				lastSequence = sequences.get(sequences.size() - 1);
+			}
+
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("text/plain;charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(lastSequence);
+
+		} else {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Checkpoint information not found.");
+		}
+	}
+
 	private void doCommandSave(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -113,28 +129,6 @@ public class CheckpointService extends HttpServlet {
 
 			info.getCompletedSequences().add(request.getParameter("sequence"));
 			response.setStatus(HttpServletResponse.SC_OK);
-
-		} else {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Checkpoint information not found.");
-		}
-	}
-
-	private void doCommandUpload(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		CheckpointBO checkpointBO = CheckpointBO.getInstance();
-		CheckpointInformation info = checkpointBO.getByKey(request.getParameter("key"));
-		if (info != null) {
-
-			try {
-				checkpointBO.persistContent(request.getParameter("key"), request.getParameter("sequence"),
-						request.getParameter("description"), request.getParameter("content"),
-						request.getServletContext().getRealPath(uploadPath));
-				response.setStatus(HttpServletResponse.SC_OK);
-
-			} catch (Exception ex) {
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
-			}
 
 		} else {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Checkpoint information not found.");

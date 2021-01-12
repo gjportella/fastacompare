@@ -40,12 +40,18 @@ public class CheckpointBO extends BusinessObject {
 		return instance;
 	}
 
-	public CheckpointInformation create(String ipAddress) {
+	public CheckpointInformation create(String key, String ipAddress) {
+
 		CheckpointInformation info = new CheckpointInformation();
+		if (key != null && key.trim().length() > 0) {
+			info.setKey(key);
+		} else {
+			info.setKey(randomString.nextString());
+		}
+
 		info.setActive(true);
 		info.setIpAddress(ipAddress);
 		info.setStartTime(new Date(System.currentTimeMillis()));
-		info.setKey(randomString.nextString());
 		checkpointMap.put(info.getKey(), info);
 		return info;
 	}
