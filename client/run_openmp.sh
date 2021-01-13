@@ -5,9 +5,9 @@ echo "Biological sequence comparison using MASA-OpenMP"
 serverUrlBase="http://192.168.56.1:8080"
 serverParamKey="test123"
 
-# Reference sequence and sequences path
-seqBase="./sequences/NC_045512.2.fasta"
-seqPath="./sequences/lineage_B.1.1.7"
+# Source and target sequences paths
+sourcePath="./sequences/reference"
+targetPath="./sequences/lineage_B.1.1.7"
 
 # MASA-OpenMP work path and files
 ompWorkPath="./work.tmp"
@@ -40,61 +40,65 @@ else
 	checkpoint=true
 fi
 
-# Loop through all sequences
-for f in $seqPath/*.fasta
+# Loop through all source sequences
+for sourceSeq in $sourcePath/*.fasta
 do
 
-	# Parse current sequence name
-	currentSequence="$(basename $f)"
+	# Loop through all target sequences
+	for targetSeq in $targetPath/*.fasta
+	do
 
-	# Resume from checkpoint/last sequence
-	if $checkpoint; then
-		if [ $lastSequence == $currentSequence ]; then
-			checkpoint=false
+		# Parse current sequence name
+		sourceSeqName="$(basename $sourceSeq)" # file name without path
+		sourceSeqName="${sourceSeqName%.*}"    # file name without extension
+		targetSeqName="$(basename $targetSeq)" # file name without path
+		targetSeqName="${targetSeqName%.*}"    # file name without extension
+		currentSequence="${sourceSeqName}_${targetSeqName}"
+
+		# Resume from checkpoint/last sequence
+		if $checkpoint; then
+			if [ $lastSequence == $currentSequence ]; then
+				checkpoint=false
+			fi
+			continue
 		fi
-		continue
-	fi
 
-	# Start processing current sequence
-	echo "Processing sequence $currentSequence"
+		# Start processing current sequence
+		echo "Processing sequence $currentSequence"
 
-	# Clear working directory
-	rm -rf $ompWorkPath
+		# Call MASA-OpenMP and save results
+		~/masa-openmp-1.0.1.1024/masa-openmp --alignment-edges=++ $sourceSeq $targetSeq >> /dev/null
+		cp $ompStatsFileName $seqResultsPath/statistics-$currentSequence
+		cp $ompAlignFileName $seqResultsPath/alignment-$currentSequence
 
-	# Call MASA-OpenMP and save results
-	~/masa-openmp-1.0.1.1024/masa-openmp --alignment-edges=++ $seqBase $f >> /dev/null
-	cp $ompStatsFileName $seqResultsPath/statistics-$currentSequence
-	cp $ompAlignFileName $seqResultsPath/alignment-$currentSequence
+		# Upload statistics file
+		serverUrlUpload="$serverUrlBase/checkpoint/rest/upload"
+		serverParamDescription="statistics"
+		curl -X POST -H "Content-Type: multipart/form-data" \
+			-F "key=$serverParamKey" \
+			-F "sequence=$currentSequence" \
+			-F "description=$serverParamDescription" \
+			-F "content=@$seqResultsPath/$serverParamDescription-$currentSequence" \
+			"$serverUrlUpload"
 
-	# Upload statistics file
-	serverUrlUpload="$serverUrlBase/checkpoint/rest/upload"
-	serverParamDescription="statistics"
-	curl -X POST -H "Content-Type: multipart/form-data" \
-		-F "key=$serverParamKey" \
-		-F "sequence=$currentSequence" \
-		-F "description=$serverParamDescription" \
-		-F "content=@$seqResultsPath/$serverParamDescription-$currentSequence" \
-		"$serverUrlUpload"
+		# Upload alignment file
+		serverParamDescription="alignment"
+		curl -X POST -H "Content-Type: multipart/form-data" \
+			-F "key=$serverParamKey" \
+			-F "sequence=$currentSequence" \
+			-F "description=$serverParamDescription" \
+			-F "content=@$seqResultsPath/$serverParamDescription-$currentSequence" \
+			"$serverUrlUpload"
 
-	# Upload alignment file
-	serverParamDescription="alignment"
-	curl -X POST -H "Content-Type: multipart/form-data" \
-		-F "key=$serverParamKey" \
-		-F "sequence=$currentSequence" \
-		-F "description=$serverParamDescription" \
-		-F "content=@$seqResultsPath/$serverParamDescription-$currentSequence" \
-		"$serverUrlUpload"
+		# Save checkpoint
+		serverUrlSave="$serverUrlBase/checkpoint/rest/service?c=save&key=$serverParamKey&sequence=$currentSequence"
+		wget -O _wget_tmp_file.txt "$serverUrlSave"
+		rm _wget_tmp_file.txt
 
-	# Save checkpoint
-	serverUrlSave="$serverUrlBase/checkpoint/rest/service?c=save&key=$serverParamKey&sequence=$currentSequence"
-	wget -O _wget_tmp_file.txt "$serverUrlSave"
-	rm _wget_tmp_file.txt
+		# Clear procedures
+		rm -rf $ompWorkPath
 
-	# Clear procedures
-	rm -rf $ompWorkPath
-
-	# Simulate an exception
-	break
+	done
 
 done
 

@@ -120,19 +120,23 @@ public class CheckpointService extends HttpServlet {
 
 		CheckpointBO checkpointBO = CheckpointBO.getInstance();
 		CheckpointInformation info = checkpointBO.getByKey(request.getParameter("key"));
-		if (info != null && info.isActive()) {
-			
-			String lastSequence = "";
-			List<String> sequences = info.getCompletedSequences();
-			if (sequences.size() > 0) {
-				lastSequence = sequences.get(sequences.size() - 1);
+		if (info != null) {
+			if (info.isActive()) {
+				
+				String lastSequence = "";
+				List<String> sequences = info.getCompletedSequences();
+				if (sequences.size() > 0) {
+					lastSequence = sequences.get(sequences.size() - 1);
+				}
+	
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.setContentType("text/plain;charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(lastSequence);
+
+			} else {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Checkpoint information is not active.");
 			}
-
-			response.setStatus(HttpServletResponse.SC_OK);
-			response.setContentType("text/plain;charset=UTF-8");
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(lastSequence);
-
 		} else {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Checkpoint information not found.");
 		}
