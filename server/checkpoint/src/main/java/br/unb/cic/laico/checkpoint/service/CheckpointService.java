@@ -150,6 +150,7 @@ public class CheckpointService extends HttpServlet {
 		if (info != null) {
 
 			info.getCompletedSequences().add(request.getParameter("sequence"));
+			info.setEndTime(new Date(System.currentTimeMillis()));
 			response.setStatus(HttpServletResponse.SC_OK);
 
 		} else {
