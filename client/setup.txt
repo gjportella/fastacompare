@@ -1,0 +1,34 @@
+# Bash commands to setup the client environment in the
+# running Amazon AWS EC2 instance.
+#
+# After running the setup, modify the "serverUrlBase" and
+# "serverParamKey" variables in the run_openmp.sh script
+# file.
+#
+# Important: run the setup commands in user home directory.
+
+#!/bin/bash
+cd ~/
+sudo apt update
+sudo apt install g++
+sudo apt install make
+wget -O masa-openmp-1.0.1.1024.tar.gz 'https://github.com/edanssandes/MASA-OpenMP/blob/master/releases/masa-openmp-1.0.1.1024.tar.gz?raw=true'
+tar -zxvf masa-openmp-1.0.1.1024.tar.gz
+cd masa-openmp-1.0.1.1024/
+./configure
+make
+cd ..
+git clone https://github.com/gjportella/fastacompare
+cd fastacompare/client/sequences/lineage_B.1.1.7/
+tar -xzf EPI_ISL_6.tar.gz
+tar -xzf EPI_ISL_70.tar.gz
+tar -xzf EPI_ISL_71.tar.gz
+tar -xzf EPI_ISL_72.tar.gz
+tar -xzf EPI_ISL_73.tar.gz
+tar -xzf EPI_ISL_74.tar.gz
+tar -xzf EPI_ISL_75.tar.gz
+rm *.tar.gz
+ls | wc -l
+cd ../
+cd ../
+
