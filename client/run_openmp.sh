@@ -82,13 +82,13 @@ do
 			"$serverUrlUpload"
 
 		# Upload alignment file
-		serverParamDescription="alignment"
-		curl -X POST -H "Content-Type: multipart/form-data" \
-			-F "key=$serverParamKey" \
-			-F "sequence=$currentSequence" \
-			-F "description=$serverParamDescription" \
-			-F "content=@$seqResultsPath/$serverParamDescription-$currentSequence" \
-			"$serverUrlUpload"
+		#serverParamDescription="alignment"
+		#curl -X POST -H "Content-Type: multipart/form-data" \
+		#	-F "key=$serverParamKey" \
+		#	-F "sequence=$currentSequence" \
+		#	-F "description=$serverParamDescription" \
+		#	-F "content=@$seqResultsPath/$serverParamDescription-$currentSequence" \
+		#	"$serverUrlUpload"
 
 		# Save checkpoint
 		serverUrlSave="$serverUrlBase/checkpoint/rest/service?c=save&key=$serverParamKey&sequence=$currentSequence"
