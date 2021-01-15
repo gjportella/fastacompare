@@ -3,7 +3,6 @@ package br.unb.cic.laico.checkpoint.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import br.unb.cic.laico.checkpoint.util.DateUtil;
@@ -84,20 +83,7 @@ public class CheckpointInformation implements Serializable {
 		} else {
 			str.append("endTime").append(":").append("").append(",");
 		}
-		str.append("completedSequences:[");
-
-		Iterator<String> it = completedSequences.iterator();
-		while (it.hasNext()) {
-			String sequenceName = it.next();
-			str.append("{");
-			str.append("sequenceName").append(":").append(sequenceName);
-			str.append("}");
-			if (it.hasNext()) {
-				str.append(",");
-			}
-		}
-
-		str.append("]");
+		str.append("completedSequencesSize").append(":").append(this.completedSequences.size());
 		str.append("}");
 		return str.toString();
 	}

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,5 +89,27 @@ public class CheckpointBO extends BusinessObject {
 				output.close();
 			}
 		}
+	}
+	
+	public String getCompletedSequencesAsJSON(String key) {
+		
+		CheckpointInformation info = getByKey(key);
+		List<String> completedSequences = info.getCompletedSequences();
+
+		StringBuilder str = new StringBuilder("{");
+		str.append("completedSequences:[");
+		Iterator<String> it = completedSequences.iterator();
+		while (it.hasNext()) {
+			String sequenceName = it.next();
+			str.append("{");
+			str.append("sequenceName").append(":").append(sequenceName);
+			str.append("}");
+			if (it.hasNext()) {
+				str.append(",");
+			}
+		}
+		str.append("]");
+		str.append("}");
+		return str.toString();
 	}
 }
