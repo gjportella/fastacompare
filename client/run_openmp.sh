@@ -69,7 +69,7 @@ do
 		# Call MASA-OpenMP and save results
 		~/masa-openmp-1.0.1.1024/masa-openmp --alignment-edges=++ $sourceSeq $targetSeq >> /dev/null
 		cp $ompStatsFileName $seqResultsPath/statistics-$currentSequence
-		cp $ompAlignFileName $seqResultsPath/alignment-$currentSequence
+		#cp $ompAlignFileName $seqResultsPath/alignment-$currentSequence
 
 		# Upload statistics file
 		serverUrlUpload="$serverUrlBase/checkpoint/rest/upload"
